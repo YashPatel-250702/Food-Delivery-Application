@@ -987,6 +987,7 @@ export namespace Prisma {
     phoneNo: string | null
     password: string | null
     address: string | null
+    userRole: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -998,6 +999,7 @@ export namespace Prisma {
     phoneNo: string | null
     password: string | null
     address: string | null
+    userRole: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1009,6 +1011,7 @@ export namespace Prisma {
     phoneNo: number
     password: number
     address: number
+    userRole: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -1030,6 +1033,7 @@ export namespace Prisma {
     phoneNo?: true
     password?: true
     address?: true
+    userRole?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1041,6 +1045,7 @@ export namespace Prisma {
     phoneNo?: true
     password?: true
     address?: true
+    userRole?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1052,6 +1057,7 @@ export namespace Prisma {
     phoneNo?: true
     password?: true
     address?: true
+    userRole?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -1150,8 +1156,9 @@ export namespace Prisma {
     phoneNo: string
     password: string
     address: string
+    userRole: string
     createdAt: Date
-    updatedAt: Date
+    updatedAt: Date | null
     _count: UserCountAggregateOutputType | null
     _avg: UserAvgAggregateOutputType | null
     _sum: UserSumAggregateOutputType | null
@@ -1180,6 +1187,7 @@ export namespace Prisma {
     phoneNo?: boolean
     password?: boolean
     address?: boolean
+    userRole?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -1191,6 +1199,7 @@ export namespace Prisma {
     phoneNo?: boolean
     password?: boolean
     address?: boolean
+    userRole?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -1202,6 +1211,7 @@ export namespace Prisma {
     phoneNo?: boolean
     password?: boolean
     address?: boolean
+    userRole?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -1213,11 +1223,12 @@ export namespace Prisma {
     phoneNo?: boolean
     password?: boolean
     address?: boolean
+    userRole?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phoneNo" | "password" | "address" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phoneNo" | "password" | "address" | "userRole" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
@@ -1229,8 +1240,9 @@ export namespace Prisma {
       phoneNo: string
       password: string
       address: string
+      userRole: string
       createdAt: Date
-      updatedAt: Date
+      updatedAt: Date | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -1660,6 +1672,7 @@ export namespace Prisma {
     readonly phoneNo: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
     readonly address: FieldRef<"User", 'String'>
+    readonly userRole: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
@@ -3052,6 +3065,7 @@ export namespace Prisma {
     phoneNo: 'phoneNo',
     password: 'password',
     address: 'address',
+    userRole: 'userRole',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -3082,6 +3096,14 @@ export namespace Prisma {
   };
 
   export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+  export const NullsOrder: {
+    first: 'first',
+    last: 'last'
+  };
+
+  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
   /**
@@ -3158,8 +3180,9 @@ export namespace Prisma {
     phoneNo?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
     address?: StringFilter<"User"> | string
+    userRole?: StringFilter<"User"> | string
     createdAt?: DateTimeFilter<"User"> | Date | string
-    updatedAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
   }
 
   export type UserOrderByWithRelationInput = {
@@ -3169,8 +3192,9 @@ export namespace Prisma {
     phoneNo?: SortOrder
     password?: SortOrder
     address?: SortOrder
+    userRole?: SortOrder
     createdAt?: SortOrder
-    updatedAt?: SortOrder
+    updatedAt?: SortOrderInput | SortOrder
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -3183,8 +3207,9 @@ export namespace Prisma {
     phoneNo?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
     address?: StringFilter<"User"> | string
+    userRole?: StringFilter<"User"> | string
     createdAt?: DateTimeFilter<"User"> | Date | string
-    updatedAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeNullableFilter<"User"> | Date | string | null
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -3194,8 +3219,9 @@ export namespace Prisma {
     phoneNo?: SortOrder
     password?: SortOrder
     address?: SortOrder
+    userRole?: SortOrder
     createdAt?: SortOrder
-    updatedAt?: SortOrder
+    updatedAt?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
@@ -3213,8 +3239,9 @@ export namespace Prisma {
     phoneNo?: StringWithAggregatesFilter<"User"> | string
     password?: StringWithAggregatesFilter<"User"> | string
     address?: StringWithAggregatesFilter<"User"> | string
+    userRole?: StringWithAggregatesFilter<"User"> | string
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    updatedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   }
 
   export type RestaurantWhereInput = {
@@ -3267,8 +3294,9 @@ export namespace Prisma {
     phoneNo: string
     password: string
     address: string
+    userRole: string
     createdAt?: Date | string
-    updatedAt?: Date | string
+    updatedAt?: Date | string | null
   }
 
   export type UserUncheckedCreateInput = {
@@ -3278,8 +3306,9 @@ export namespace Prisma {
     phoneNo: string
     password: string
     address: string
+    userRole: string
     createdAt?: Date | string
-    updatedAt?: Date | string
+    updatedAt?: Date | string | null
   }
 
   export type UserUpdateInput = {
@@ -3288,8 +3317,9 @@ export namespace Prisma {
     phoneNo?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
+    userRole?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type UserUncheckedUpdateInput = {
@@ -3299,8 +3329,9 @@ export namespace Prisma {
     phoneNo?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
+    userRole?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type UserCreateManyInput = {
@@ -3310,8 +3341,9 @@ export namespace Prisma {
     phoneNo: string
     password: string
     address: string
+    userRole: string
     createdAt?: Date | string
-    updatedAt?: Date | string
+    updatedAt?: Date | string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -3320,8 +3352,9 @@ export namespace Prisma {
     phoneNo?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
+    userRole?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -3331,8 +3364,9 @@ export namespace Prisma {
     phoneNo?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     address?: StringFieldUpdateOperationsInput | string
+    userRole?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type RestaurantCreateInput = {
@@ -3411,6 +3445,22 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
+  }
+
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -3418,6 +3468,7 @@ export namespace Prisma {
     phoneNo?: SortOrder
     password?: SortOrder
     address?: SortOrder
+    userRole?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -3433,6 +3484,7 @@ export namespace Prisma {
     phoneNo?: SortOrder
     password?: SortOrder
     address?: SortOrder
+    userRole?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -3444,6 +3496,7 @@ export namespace Prisma {
     phoneNo?: SortOrder
     password?: SortOrder
     address?: SortOrder
+    userRole?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -3500,6 +3553,20 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
   export type RestaurantCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -3532,6 +3599,10 @@ export namespace Prisma {
 
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -3576,6 +3647,17 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -3634,6 +3716,31 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
 

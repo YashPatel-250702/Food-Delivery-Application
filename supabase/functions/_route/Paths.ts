@@ -1,5 +1,5 @@
 
 export enum APIPaths {
-    SENDOTP="/sendotp",
-    VERIFYOTP="/verifyotp",
+    LOGIN="/Food-Delivery/user/login",
+    REGISTER="/Food-Delivery/user/register",
 }

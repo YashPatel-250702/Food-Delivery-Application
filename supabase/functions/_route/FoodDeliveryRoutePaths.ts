@@ -1,11 +1,14 @@
-import { HttpMethods } from './shared/HttpMethods';
-import { APIPaths } from './Paths.ts';
-import { sendOtpHandler } from '../_handler/SendOtpHandler.ts';
-import { verifyOtpHandler } from '../_handler/VerifyOtpHandler.ts';
 
-export const FoodDeliveryRoutes = {
-  [HttpMethods.POST]: {
-    [APIPaths.SENDOTP]: sendOtpHandler,
-    [APIPaths.VERIFYOTP]: verifyOtpHandler,
-  },
-};
+import { loginHandler } from "../_handler/_userHandler/LoginHandler.ts";
+import { registerHandler } from "../_handler/_userHandler/RegisterHandler.ts";
+import { HttpMethods } from "../_shared/HttpMethods.ts";
+import { APIPaths } from "./Paths.ts";
+
+export const FoodDeliveryRoutes:Record<string,any> = {
+
+  [HttpMethods.POST]:{
+    [APIPaths.REGISTER]: registerHandler,
+    [APIPaths.LOGIN]: loginHandler
+  }
+
+}
