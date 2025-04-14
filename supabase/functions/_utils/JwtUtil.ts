@@ -1,6 +1,12 @@
-import { JWTPayload, jwtVerify, SignJWT } from "npm:jose@5.9.6";
+import {
+  type JWTPayload,
+  jwtVerify,
+  SignJWT,
+} from "https://deno.land/x/jose@v4.14.4/index.ts";
 
-const secret = new TextEncoder().encode("ryweuftioovqiuhmhxwrunkfvsorniygwuiwrfamjhrycvuyikgjugbomnjupxucnskhjbuthxjabjsr");
+const secret = new TextEncoder().encode(
+  "ryweuftioovqiuhmhxwrunkfvsorniygwuiwrfamjhrycvuyikgjugbomnjupxucnskhjbuthxjabjsr",
+);
 
 export async function createJWT(payload: JWTPayload): Promise<string> {
   const jwt = await new SignJWT(payload)

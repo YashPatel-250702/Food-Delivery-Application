@@ -1,5 +1,5 @@
 
-export const enum UserValidationErrorMessages {
+export enum UserValidationErrorMessages {
 
   NAME_REQUIRED = 'Username is required',
   NAME_LENGTH = 'Username should be at least 3 characters long',

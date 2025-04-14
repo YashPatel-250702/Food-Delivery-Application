@@ -1,6 +1,5 @@
-
-export const TableNames = {
-    
-    USER: "User",
-    RESTAURANT: "Restaurant"
+export enum TableNames {
+    USER = "User",
+    RESTAURANT = "Restaurant",
+    AVAILABLE_ITEMS = "AvailableItems",
 }

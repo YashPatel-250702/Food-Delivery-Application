@@ -6,7 +6,8 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  output   = "./generated/client/deno" 
+  previewFeatures = ["deno"]
 }
 
 datasource db {
@@ -21,12 +22,34 @@ model User {
   phoneNo  String
   password String
   address  String
-  userRole String
+  userRole String  @default("ROLE_USER")
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt 
 }
-model Restaurant{
-  id      Int  @id  @default(autoincrement())
-  name    String  @unique
-  address DateTime
+
+model Restaurant {
+  id             Int             @id @default(autoincrement())
+  name           String          @unique
+  ownerName      String
+  ownerPhoneNo   String
+  address        String
+  restaurantType String
+  orderCapacityPerDay  Int
+  openTime       String
+  closingTime    String
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime?
+  items          AvailableItems[]
 }
+
+model AvailableItems {
+  id            Int        @id @default(autoincrement())
+  name          String
+  description   String
+  price          Float
+  restaurantId  Int
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime?
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+}
+

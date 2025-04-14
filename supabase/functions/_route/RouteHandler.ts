@@ -1,5 +1,3 @@
-
-
 /**
  * This function takes a request and a set of routes, and uses the
  * method and path of the request to determine which route to
@@ -13,17 +11,22 @@
  * @returns A response to the request.
  */
 
-export async function routeHandler(req: Request, routes:Record<string,any> ): Promise<Response> {
+export async function routeHandler(
+    req: Request,
+    routes: Record<string, any>,
+): Promise<Response> {
     const method = req.method;
     const url = new URL(req.url);
     const path = url.pathname;
 
-    const allroutesPath:string[] = Object.values(routes).flatMap((route) => Object.keys(route));
+    const allroutesPath: string[] = Object.values(routes).flatMap((route) =>
+        Object.keys(route)
+    );
 
-    const allmethodsRoute:Record<string,any> = routes[method];
+    const allmethodsRoute: Record<string, any> = routes[method];
 
     if (!allmethodsRoute) {
-        return new Response("Method Not Allowed", { status: 405 }); 
+        return new Response("Method Not Allowed", { status: 405 });
     }
 
     if (allroutesPath.includes(path)) {
@@ -33,21 +36,20 @@ export async function routeHandler(req: Request, routes:Record<string,any> ): Pr
     }
 
     // Check if the path is a static route (e.g., /posts)
-    if(allmethodsRoute[path]) {
+    if (allmethodsRoute[path]) {
         const handler = allmethodsRoute[path];
-        return await handler(req);  
+        return await handler(req);
     }
 
     //dynamic route matching
     // Check if the path is a dynamic route (e.g., /posts/:id)
-   
+
     for (const routePath of allroutesPath) {
         const params = dynamicRouteMatching(path, routePath);
         if (params) {
-             const handler = allmethodsRoute[routePath];
-             return await handler(req, params);
+            const handler = allmethodsRoute[routePath];
+            return await handler(req, params);
         }
-        
     }
 
     return new Response("Route Not Found", { status: 404 });
