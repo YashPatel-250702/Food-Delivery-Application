@@ -5,6 +5,7 @@ import { TableNames } from "../_shared/TableNames.ts";
 import { RestaurantModel } from "../_model/AddRestaurantModel.ts";
 import { RegisteredType } from "../_shared/_commonTypes.ts/InsertedType.ts";
 import { AvailableItems } from "../_model/Item.ts";
+
 /**
  * Checks if a restaurant already exists with the given name, ownerName, ownerPhoneNo.
  * Returns an object with a count property set to the number of matching restaurants, or null if an error occurs.
@@ -15,18 +16,18 @@ import { AvailableItems } from "../_model/Item.ts";
  * @returns {Promise<{count:number|null ; error:PostgrestError|null}>}
  */
 export async function checkRestaurantAlreadyExists(
-   name: string,
-   ownerName: string,
-   ownerPhoneNo: string,
+  name: string,
+  ownerName: string,
+  ownerPhoneNo: string,
 ): Promise<{ count: number | null; error: PostgrestError | null }> {
-   const { count, error } = await supabase
-      .from(TableNames.RESTAURANT)
-      .select(RestaurantFieldNames.ID, { count: "exact", head: true })
-      .eq(RestaurantFieldNames.NAME, name)
-      .eq(RestaurantFieldNames.OWENER_NAME, ownerName)
-      .eq(RestaurantFieldNames.OWNER_PHONE_NO, ownerPhoneNo);
+  const { count, error } = await supabase
+    .from(TableNames.RESTAURANT)
+    .select(RestaurantFieldNames.ID, { count: "exact", head: true })
+    .eq(RestaurantFieldNames.NAME, name)
+    .eq(RestaurantFieldNames.OWENER_NAME, ownerName)
+    .eq(RestaurantFieldNames.OWNER_PHONE_NO, ownerPhoneNo);
 
-   return { count, error };
+  return { count, error };
 }
 /**
  * Inserts a new restaurant and its available items into the database.
@@ -42,58 +43,58 @@ export async function checkRestaurantAlreadyExists(
  */
 
 export async function addRestaurantRepository(
-   restaurantData: RestaurantModel,
+  restaurantData: RestaurantModel,
 ): Promise<{ data: RegisteredType | null; error: PostgrestError | null }> {
-   const { data, error } = await supabase
-      .from(TableNames.RESTAURANT)
-      .insert([
-         {
-            name: restaurantData.name,
-            ownerName: restaurantData.ownerName,
-            ownerPhoneNo: restaurantData.ownerPhoneNo,
-            address: restaurantData.address,
-            restaurantType: restaurantData.restaurantType,
-            orderCapacityPerDay: restaurantData.orderCapacityByDay,
-            openTime: restaurantData.openTime,
-            closingTime: restaurantData.closingTime,
-         },
-      ])
-      .select(RestaurantFieldNames.ID)
-      .maybeSingle();
+  const { data, error } = await supabase
+    .from(TableNames.RESTAURANT)
+    .insert([
+      {
+        name: restaurantData.name,
+        ownerName: restaurantData.ownerName,
+        ownerPhoneNo: restaurantData.ownerPhoneNo,
+        address: restaurantData.address,
+        restaurantType: restaurantData.restaurantType,
+        orderCapacityPerDay: restaurantData.orderCapacityByDay,
+        openTime: restaurantData.openTime,
+        closingTime: restaurantData.closingTime,
+      },
+    ])
+    .select(RestaurantFieldNames.ID)
+    .maybeSingle();
 
-   if (error) {
-      console.log("Error while inserting Restaurant: ", error.message);
-      return { data: null, error: error };
-   }
-   const restaurantId = data?.id;
+  if (error) {
+    console.log("Error while inserting Restaurant: ", error.message);
+    return { data: null, error: error };
+  }
+  const restaurantId = data?.id;
 
-   const allItems: AvailableItems[] = restaurantData.AvailableItems.map((
-      item,
-   ) => ({
-      name: item.name,
-      price: item.price,
-      description: item.description,
+  const allItems: AvailableItems[] = restaurantData.AvailableItems.map((
+    item,
+  ) => ({
+    name: item.name,
+    price: item.price,
+    description: item.description,
+    restaurantId,
+  }));
+
+  console.log("All Items: ", allItems);
+  const { error: itemsError } = await supabase
+    .from(TableNames.AVAILABLE_ITEMS)
+    .insert(allItems);
+
+  if (itemsError) {
+    console.log(
+      "Error while inserting Available Items: ",
+      itemsError.message,
+    );
+    await supabase.from(TableNames.RESTAURANT).delete().eq(
+      "id",
       restaurantId,
-   }));
+    );
+    return { data: null, error: itemsError };
+  }
 
-   console.log("All Items: ", allItems);
-   const { error: itemsError } = await supabase
-      .from(TableNames.AVAILABLE_ITEMS)
-      .insert(allItems);
-
-   if (itemsError) {
-      console.log(
-         "Error while inserting Available Items: ",
-         itemsError.message,
-      );
-      await supabase.from(TableNames.RESTAURANT).delete().eq(
-         "id",
-         restaurantId,
-      );
-      return { data: null, error: itemsError };
-   }
-
-   return { data, error };
+  return { data, error };
 }
 
 /**
@@ -105,13 +106,27 @@ export async function addRestaurantRepository(
  *    object containing the retrieved restaurant or an error if the operation fails.
  */
 export async function getRestaurantByIdRepository(
-   id: number,
+  id: number,
 ): Promise<{ data: RestaurantModel | null; error: PostgrestError | null }> {
-   const { data, error } = await supabase
-      .from(TableNames.RESTAURANT)
-      .select("*")
-      .eq(RestaurantFieldNames.ID, id)
-      .maybeSingle();
+  const { data, error } = await supabase
+    .from(TableNames.RESTAURANT)
+    .select("*")
+    .eq(RestaurantFieldNames.ID, id)
+    .maybeSingle();
 
-   return { data, error };
+  return { data, error };
+}
+
+export async function getRestaurantWithAvailableItems(
+  restaurantId: number,
+): Promise<{ data: RestaurantModel; error: PostgrestError | null }> {
+  const { data, error } = await supabase
+    .from(TableNames.RESTAURANT)
+    .select(`
+      *,
+      ${TableNames.AVAILABLE_ITEMS} (*)
+    `)
+    .eq(RestaurantFieldNames.ID, restaurantId);
+
+  return { data: data?.[0], error };
 }

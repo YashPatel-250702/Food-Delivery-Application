@@ -1,6 +1,8 @@
 import { addRestaurantHandler } from "../_handler/_restaurantHandlers.ts/AddRestaurant.ts";
+import { getAvailableItemsHandler } from "../_handler/_restaurantHandlers.ts/GetAllItemsForRestaurant.ts";
 import { getRestaurantByIdHandler } from "../_handler/_restaurantHandlers.ts/GetRestaurantHandler.ts";
 import { loginHandler } from "../_handler/_userHandler/LoginHandler.ts";
+import { orderFoodsHandler } from "../_handler/_userHandler/OrderFoodHandler.ts";
 import { registerHandler } from "../_handler/_userHandler/RegisterHandler.ts";
 import { checkUserAuthentication } from "../_middlerware/UserAuthentication_Autorization.ts";
 import { HttpMethods } from "../_shared/HttpMethods.ts";
@@ -18,11 +20,26 @@ export const FoodDeliveryRoutes: Record<string, any> = {
         ROLES.ADMIN_ROLE,
       ],
     ),
+
+    [APIPaths.ORDER_FOODS]: checkUserAuthentication(
+      orderFoodsHandler,
+      [
+        ROLES.USER_ROLE,
+        ROLES.ADMIN_ROLE,
+      ],
+    ),
   },
 
   [HttpMethods.GET]: {
     [APIPaths.GET_RESTAURANT_BY_ID]: checkUserAuthentication(
       getRestaurantByIdHandler,
+      [
+        ROLES.USER_ROLE,
+        ROLES.ADMIN_ROLE,
+      ],
+    ),
+    [APIPaths.GET_AVAILABLE_ITEMS_BY_RESTAURANT_ID]: checkUserAuthentication(
+      getAvailableItemsHandler,
       [
         ROLES.USER_ROLE,
         ROLES.ADMIN_ROLE,
