@@ -1,13 +1,13 @@
 export interface AvailableItems {
-    id?: number;
+  id?: number;
 
-    name: string;
+  name: string;
 
-    description: string;
+  description: string;
 
-    price: number;
+  price: number;
 
-    restaurantId: number;
+  restaurantId: number;
 
-    createdAt?: Date;
+  createdAt?: Date;
 }

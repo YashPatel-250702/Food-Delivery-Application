@@ -25,6 +25,8 @@ model User {
   userRole  String    @default("ROLE_USER")
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
+
+  orders Order[]
 }
 
 model Restaurant {
@@ -40,6 +42,7 @@ model Restaurant {
   createdAt           DateTime         @default(now())
   updatedAt           DateTime?
   items               AvailableItems[]
+  orders              Order[]
 }
 
 model AvailableItems {
@@ -51,4 +54,24 @@ model AvailableItems {
   createdAt    DateTime   @default(now())
   updatedAt    DateTime?
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+}
+
+model Order {
+  id           Int @id @default(autoincrement())
+  userId       Int
+  restaurantId Int
+
+  // Store list of foodId and quantity as JSON
+  foodItems Json
+
+  address     String
+  totalAmount Float
+  orderStatus String    @default("pending")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@map("orders")
 }

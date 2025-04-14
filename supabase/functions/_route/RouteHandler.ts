@@ -12,47 +12,47 @@
  */
 
 export async function routeHandler(
-    req: Request,
-    routes: Record<string, any>,
+  req: Request,
+  routes: Record<string, any>,
 ): Promise<Response> {
-    const method = req.method;
-    const url = new URL(req.url);
-    const path = url.pathname;
+  const method = req.method;
+  const url = new URL(req.url);
+  const path = url.pathname;
 
-    const allroutesPath: string[] = Object.values(routes).flatMap((route) =>
-        Object.keys(route)
-    );
+  const allroutesPath: string[] = Object.values(routes).flatMap((route) =>
+    Object.keys(route)
+  );
 
-    const allmethodsRoute: Record<string, any> = routes[method];
+  const allmethodsRoute: Record<string, any> = routes[method];
 
-    if (!allmethodsRoute) {
-        return new Response("Method Not Allowed", { status: 405 });
+  if (!allmethodsRoute) {
+    return new Response("Method Not Allowed", { status: 405 });
+  }
+
+  if (allroutesPath.includes(path)) {
+    if (!allmethodsRoute[path]) {
+      return new Response("Method Not Allowed", { status: 405 });
     }
+  }
 
-    if (allroutesPath.includes(path)) {
-        if (!allmethodsRoute[path]) {
-            return new Response("Method Not Allowed", { status: 405 });
-        }
+  // Check if the path is a static route (e.g., /posts)
+  if (allmethodsRoute[path]) {
+    const handler = allmethodsRoute[path];
+    return await handler(req);
+  }
+
+  //dynamic route matching
+  // Check if the path is a dynamic route (e.g., /posts/:id)
+
+  for (const routePath of allroutesPath) {
+    const params = dynamicRouteMatching(path, routePath);
+    if (params) {
+      const handler = allmethodsRoute[routePath];
+      return await handler(req, params);
     }
+  }
 
-    // Check if the path is a static route (e.g., /posts)
-    if (allmethodsRoute[path]) {
-        const handler = allmethodsRoute[path];
-        return await handler(req);
-    }
-
-    //dynamic route matching
-    // Check if the path is a dynamic route (e.g., /posts/:id)
-
-    for (const routePath of allroutesPath) {
-        const params = dynamicRouteMatching(path, routePath);
-        if (params) {
-            const handler = allmethodsRoute[routePath];
-            return await handler(req, params);
-        }
-    }
-
-    return new Response("Route Not Found", { status: 404 });
+  return new Response("Route Not Found", { status: 404 });
 }
 
 /**
@@ -65,24 +65,24 @@ export async function routeHandler(
  * dynamicRouteMatching("/posts/1", "/posts/:id") // returns null
  */
 function dynamicRouteMatching(actualPath: string, routePath: string) {
-    const actualPathParts: string[] = actualPath.split("/");
-    const routePathParts: string[] = routePath.split("/");
+  const actualPathParts: string[] = actualPath.split("/");
+  const routePathParts: string[] = routePath.split("/");
 
-    if (actualPathParts.length !== routePathParts.length) {
-        return null;
+  if (actualPathParts.length !== routePathParts.length) {
+    return null;
+  }
+
+  const params: Record<string, string> = {};
+
+  for (let i = 0; i < actualPathParts.length; i++) {
+    const actualPart: string = actualPathParts[i];
+    const routePart: string = routePathParts[i];
+
+    if (routePart.startsWith(":")) {
+      params[routePart.slice(1)] = actualPart;
+    } else if (actualPart !== routePart) {
+      return null;
     }
-
-    const params: Record<string, string> = {};
-
-    for (let i = 0; i < actualPathParts.length; i++) {
-        const actualPart: string = actualPathParts[i];
-        const routePart: string = routePathParts[i];
-
-        if (routePart.startsWith(":")) {
-            params[routePart.slice(1)] = actualPart;
-        } else if (actualPart !== routePart) {
-            return null;
-        }
-    }
-    return params;
+  }
+  return params;
 }
