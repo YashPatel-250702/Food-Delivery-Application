@@ -12,7 +12,7 @@ export function restaurantDataValidation(
   const errors: Record<string, any> = {};
 
   if (restaurantData.name) {
-    if (restaurantData.name.length < 3) {
+    if (restaurantData.name == null || restaurantData.name.length < 3) {
       errors[RestaurantFieldNames.NAME] =
         RestaurantValidationErrorMessages.INVALID_NAME;
     }
@@ -22,7 +22,9 @@ export function restaurantDataValidation(
   }
 
   if (restaurantData.ownerName) {
-    if (restaurantData.ownerName.length < 3) {
+    if (
+      restaurantData.ownerName == null || restaurantData.ownerName.length < 3
+    ) {
       errors[RestaurantFieldNames.OWENER_NAME] =
         RestaurantValidationErrorMessages.INVALID_OWNER_NAME;
     }
@@ -32,7 +34,10 @@ export function restaurantDataValidation(
   }
 
   if (restaurantData.ownerPhoneNo) {
-    if (restaurantData.ownerPhoneNo.length !== 10) {
+    if (
+      restaurantData.ownerPhoneNo == null ||
+      restaurantData.ownerPhoneNo.length !== 10
+    ) {
       errors[RestaurantFieldNames.OWNER_PHONE_NO] =
         RestaurantValidationErrorMessages.INVALID_OWNER_PHONE_NO;
     }
@@ -43,8 +48,9 @@ export function restaurantDataValidation(
 
   if (restaurantData.address) {
     if (
+      restaurantData.address == null ||
       restaurantData.address.length < 3 &&
-      restaurantData.address.length > 100
+        restaurantData.address.length > 100
     ) {
       errors[RestaurantFieldNames.ADDRESS] =
         RestaurantValidationErrorMessages.INVALID_ADDRESS;
@@ -56,8 +62,9 @@ export function restaurantDataValidation(
 
   if (restaurantData.restaurantType) {
     if (
+      restaurantData.restaurantType == null ||
       restaurantData.restaurantType.length < 3 &&
-      restaurantData.restaurantType.length > 50
+        restaurantData.restaurantType.length > 50
     ) {
       errors[RestaurantFieldNames.RESTAURANT_TYPE] =
         RestaurantValidationErrorMessages.INVALID_RESTAURANT_TYPE;
@@ -69,8 +76,9 @@ export function restaurantDataValidation(
 
   if (restaurantData.orderCapacityByDay) {
     if (
+      restaurantData.orderCapacityByDay == null ||
       restaurantData.orderCapacityByDay < 1 &&
-      restaurantData.orderCapacityByDay > 1000
+        restaurantData.orderCapacityByDay > 1000
     ) {
       errors[RestaurantFieldNames.ORDER_CAPACITY] =
         RestaurantValidationErrorMessages.INVALID_ORDER_CAPACITY;
@@ -91,7 +99,10 @@ export function restaurantDataValidation(
   }
 
   if (restaurantData.AvailableItems) {
-    if (restaurantData.AvailableItems.length < 1) {
+    if (
+      restaurantData.AvailableItems == null ||
+      restaurantData.AvailableItems.length < 1
+    ) {
       errors[RestaurantFieldNames.AVAILABLEITMES] =
         RestaurantValidationErrorMessages.INVALID_AVAILABLE_ITEMS;
     } else {
@@ -99,7 +110,7 @@ export function restaurantDataValidation(
 
       for (const item of restaurantData.AvailableItems) {
         if (item.name) {
-          if (item.name.length < 3) {
+          if (item.name == null || item.name.length < 3) {
             itemErrors[AvailableItemsFieldNames.NAME] =
               RestaurantValidationErrorMessages.INVALID_ITEM_NAME;
           }
@@ -110,8 +121,9 @@ export function restaurantDataValidation(
 
         if (item.description) {
           if (
+            item.description == null ||
             item.description.length < 3 &&
-            item.description.length > 100
+              item.description.length > 100
           ) {
             itemErrors[AvailableItemsFieldNames.DESCRIPTION] =
               RestaurantValidationErrorMessages

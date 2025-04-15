@@ -1,6 +1,5 @@
-export enum FoodItemsFieldNames {
-  FOODID = "foodId",
-  QUANTITY = "quantity",
-
-  RESTAURANT_ID = "restaurantId",
+export enum FoodsFieldNames {
+    RESTAURANT_ID = "restaurantId",
+    FOODID = "foodId",
+    QUANTITY = "quantity",
 }

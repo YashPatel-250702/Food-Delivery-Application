@@ -2,16 +2,19 @@ import { addRestaurantHandler } from "../_handler/_restaurantHandlers.ts/AddRest
 import { getAllRestaurantHandler } from "../_handler/_restaurantHandlers.ts/GetAllHandlers.ts";
 import { getAvailableItemsHandler } from "../_handler/_restaurantHandlers.ts/GetAllItemsForRestaurant.ts";
 import { getRestaurantByIdHandler } from "../_handler/_restaurantHandlers.ts/GetRestaurantHandler.ts";
-import { cancleOrderHandler } from "../_handler/_userHandler/CancleOrder.ts";
-import { getAllordersHandler } from "../_handler/_userHandler/GetAllOrders.ts";
-import { getOrderByIdHandler } from "../_handler/_userHandler/GetOrderById.ts";
+import { cancleOrderHandler } from "../_handler/_orderHandler/CancleOrder.ts";
+import { getAllordersHandler } from "../_handler/_orderHandler/GetAllOrders.ts";
+import { getOrderByIdHandler } from "../_handler/_orderHandler/GetOrderById.ts";
 import { loginHandler } from "../_handler/_userHandler/LoginHandler.ts";
-import { orderFoodsHandler } from "../_handler/_userHandler/OrderFoodHandler.ts";
+import { orderFoodsHandler } from "../_handler/_orderHandler/OrderFoodHandler.ts";
 import { registerHandler } from "../_handler/_userHandler/RegisterHandler.ts";
+import { updateUserHandler } from "../_handler/_userHandler/UpdateUserHandler.ts";
 import { checkUserAuthentication } from "../_middlerware/UserAuthentication_Autorization.ts";
 import { HttpMethods } from "../_shared/HttpMethods.ts";
 import { ROLES } from "../_shared/Roles.ts";
 import { APIPaths } from "./Paths.ts";
+import { getUserByIdHandler } from "../_handler/_userHandler/GetUserByIdHandler.ts";
+import { getAllUserHandler } from "../_handler/_userHandler/GetAllUserHandler.ts";
 
 export const FoodDeliveryRoutes: Record<string, any> = {
   [HttpMethods.POST]: {
@@ -35,6 +38,19 @@ export const FoodDeliveryRoutes: Record<string, any> = {
   },
 
   [HttpMethods.GET]: {
+    [APIPaths.GET_USER_BY_ID]: checkUserAuthentication(
+      getUserByIdHandler,
+      [
+        ROLES.USER_ROLE,
+        ROLES.ADMIN_ROLE,
+      ],
+    ),
+    [APIPaths.GET_ALL_USERS]: checkUserAuthentication(
+      getAllUserHandler,
+      [
+        ROLES.ADMIN_ROLE,
+      ],
+    ),
     [APIPaths.GET_ALL_RESTAURANTS]: checkUserAuthentication(
       getAllRestaurantHandler,
       [
@@ -74,6 +90,14 @@ export const FoodDeliveryRoutes: Record<string, any> = {
   },
 
   [HttpMethods.PUT]: {
+    [APIPaths.UPDATE_USER]: checkUserAuthentication(
+      updateUserHandler,
+      [
+        ROLES.USER_ROLE,
+        ROLES.ADMIN_ROLE,
+      ],
+    ),
+
     [APIPaths.CANCLE_ORDER]: checkUserAuthentication(
       cancleOrderHandler,
       [
