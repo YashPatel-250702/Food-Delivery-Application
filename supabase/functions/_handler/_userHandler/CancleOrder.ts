@@ -18,10 +18,10 @@ import { OrderSuccessMessages } from "../../_shared/_successMessages/OrderSucces
  */
 export async function cancleOrderHandler(
     req: Request,
-    parms: Record<string, string>,
+    params: Record<string, string>,
 ): Promise<Response> {
     try {
-        const orderId = parms.orderId;
+        const orderId = params.orderId;
 
         if (!orderId) {
             return ErrorResponse(
@@ -29,7 +29,7 @@ export async function cancleOrderHandler(
                 OrderErrorMessages.ORDER_ID_REQUIRED,
             );
         }
-        const userId = parms.user_id;
+        const userId = params.user_id;
 
         const { data, error }: {
             data: OrderModel | null;

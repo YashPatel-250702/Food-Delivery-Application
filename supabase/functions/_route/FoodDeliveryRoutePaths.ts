@@ -4,6 +4,7 @@ import { getAvailableItemsHandler } from "../_handler/_restaurantHandlers.ts/Get
 import { getRestaurantByIdHandler } from "../_handler/_restaurantHandlers.ts/GetRestaurantHandler.ts";
 import { cancleOrderHandler } from "../_handler/_userHandler/CancleOrder.ts";
 import { getAllordersHandler } from "../_handler/_userHandler/GetAllOrders.ts";
+import { getOrderByIdHandler } from "../_handler/_userHandler/GetOrderById.ts";
 import { loginHandler } from "../_handler/_userHandler/LoginHandler.ts";
 import { orderFoodsHandler } from "../_handler/_userHandler/OrderFoodHandler.ts";
 import { registerHandler } from "../_handler/_userHandler/RegisterHandler.ts";
@@ -58,6 +59,13 @@ export const FoodDeliveryRoutes: Record<string, any> = {
 
     [APIPaths.GTE_ALL_ORDERS_BY_USER_ID]: checkUserAuthentication(
       getAllordersHandler,
+      [
+        ROLES.USER_ROLE,
+        ROLES.ADMIN_ROLE,
+      ],
+    ),
+    [APIPaths.GET_ORDER_BYID]: checkUserAuthentication(
+      getOrderByIdHandler,
       [
         ROLES.USER_ROLE,
         ROLES.ADMIN_ROLE,
