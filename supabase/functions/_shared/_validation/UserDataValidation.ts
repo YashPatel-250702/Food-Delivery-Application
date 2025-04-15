@@ -1,6 +1,8 @@
 import { User } from "../../_model/UserModel.ts";
+import { validationErrorMessage } from "../../_response/Response.ts";
 import { UserFieldNames } from "../_fieldNames/UserFieldNames.ts";
 import { UserValidationErrorMessages } from "../_validationErrorMessages/UserValidationErrorMessages.ts";
+import { HTTP_STATUS_CODE } from "../HttpCodes.ts";
 
 /**
  * Verifies user data for required fields and validates their formats.
@@ -63,12 +65,7 @@ export function UserDataValidation(user: User): Response | null {
     }
 
     if (Object.keys(errors).length > 0) {
-        return new Response(JSON.stringify(errors), {
-            status: 400,
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+        return validationErrorMessage(HTTP_STATUS_CODE.BAD_REQUEST, errors);
     }
 
     return null;

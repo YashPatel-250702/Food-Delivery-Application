@@ -11,21 +11,20 @@ import { CommonErrorMessages } from "../../_shared/_errorMessages/CommonErrorMes
 import { UserErrorMessages } from "../../_shared/_errorMessages/UserErrorMessages.ts";
 import { UserSuccessMessages } from "../../_shared/_successMessages/UserSuccessMessage.ts";
 import { RegisteredType } from "../../_shared/_commonTypes.ts/InsertedType.ts";
+import { ErrorResponse, SuccessResponse } from "../../_response/Response.ts";
+import { HTTP_STATUS_CODE } from "../../_shared/HttpCodes.ts";
 
 /**
  * Handles user registration with validation and uniqueness check.
  */
 export async function registerHandler(req: Request): Promise<Response> {
     try {
-        const raw = await req.text();
+        const raw: string = await req.text();
 
-        if (!raw) {
-            return new Response(
-                JSON.stringify({ error: CommonErrorMessages.INVALID_REQUEST }),
-                {
-                    status: 400,
-                    headers: { "content-type": "application/json" },
-                },
+        if (!raw || raw.trim() === "") {
+            return ErrorResponse(
+                HTTP_STATUS_CODE.BAD_REQUEST,
+                CommonErrorMessages.INVALID_REQUEST,
             );
         }
 
@@ -45,24 +44,16 @@ export async function registerHandler(req: Request): Promise<Response> {
                 "Error checking existing user:",
                 existingUserErrorByMail.message,
             );
-            return new Response(
-                JSON.stringify({ error: CommonErrorMessages.DATABASE_ERROR }),
-                {
-                    status: 500,
-                    headers: { "content-type": "application/json" },
-                },
+            return ErrorResponse(
+                HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR,
+                CommonErrorMessages.DATABASE_ERROR,
             );
         }
 
         if (emailCount && emailCount > 0) {
-            return new Response(
-                JSON.stringify({
-                    error: UserErrorMessages.USER_ALREADY_EXISTS_WITH_EMAIL,
-                }),
-                {
-                    status: 400,
-                    headers: { "content-type": "application/json" },
-                },
+            return ErrorResponse(
+                HTTP_STATUS_CODE.BAD_REQUEST,
+                UserErrorMessages.USER_ALREADY_EXISTS_WITH_EMAIL,
             );
         }
 
@@ -80,24 +71,16 @@ export async function registerHandler(req: Request): Promise<Response> {
                 "Error checking existing user:",
                 exitingUserByPhoneError.message,
             );
-            return new Response(
-                JSON.stringify({ error: CommonErrorMessages.DATABASE_ERROR }),
-                {
-                    status: 500,
-                    headers: { "content-type": "application/json" },
-                },
+            return ErrorResponse(
+                HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR,
+                CommonErrorMessages.DATABASE_ERROR,
             );
         }
 
         if (phoneNoCount && phoneNoCount > 0) {
-            return new Response(
-                JSON.stringify({
-                    error: UserErrorMessages.USER_ALREADY_EXISTS_WITH_PHONE_NO,
-                }),
-                {
-                    status: 400,
-                    headers: { "content-type": "application/json" },
-                },
+            return ErrorResponse(
+                HTTP_STATUS_CODE.BAD_REQUEST,
+                UserErrorMessages.USER_ALREADY_EXISTS_WITH_PHONE_NO,
             );
         }
 
@@ -114,44 +97,27 @@ export async function registerHandler(req: Request): Promise<Response> {
 
         if (error) {
             console.error("Error inserting user:", error.message);
-            return new Response(
-                JSON.stringify({ error: CommonErrorMessages.DATABASE_ERROR }),
-                {
-                    status: 500,
-                    headers: { "content-type": "application/json" },
-                },
+            return ErrorResponse(
+                HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR,
+                CommonErrorMessages.DATABASE_ERROR,
             );
         }
 
         if (!data || !data.id) {
-            return new Response(
-                JSON.stringify({ error: UserErrorMessages.USER_NOT_INSERTED }),
-                {
-                    status: 500,
-                    headers: { "content-type": "application/json" },
-                },
+            return ErrorResponse(
+                HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR,
+                UserErrorMessages.USER_NOT_INSERTED,
             );
         }
-
-        return new Response(
-            JSON.stringify({
-                message: UserSuccessMessages.USER_REGISTERED_SUCCESSFULLY,
-            }),
-            {
-                status: 200,
-                headers: { "content-type": "application/json" },
-            },
+        return SuccessResponse(
+            HTTP_STATUS_CODE.OK,
+            UserSuccessMessages.USER_REGISTERED_SUCCESSFULLY,
         );
     } catch (error) {
         console.error("Error parsing JSON:", error);
-        return new Response(
-            JSON.stringify({
-                error: CommonErrorMessages.INTERNAL_SERVER_ERROR,
-            }),
-            {
-                status: 500,
-                headers: { "content-type": "application/json" },
-            },
+        return ErrorResponse(
+            HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR,
+            CommonErrorMessages.INTERNAL_SERVER_ERROR,
         );
     }
 }

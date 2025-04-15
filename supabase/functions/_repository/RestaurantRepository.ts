@@ -130,3 +130,13 @@ export async function getRestaurantWithAvailableItems(
 
   return { data: data?.[0], error };
 }
+
+export async function getAllRestaurants(): Promise<
+  { data: RestaurantModel[] | null; error: PostgrestError | null }
+> {
+  const { data, error } = await supabase
+    .from(TableNames.RESTAURANT)
+    .select("*");
+
+  return { data, error };
+}

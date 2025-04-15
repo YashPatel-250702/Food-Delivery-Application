@@ -1,7 +1,7 @@
 import { FoodItems } from "./FoodItemsForOrder.ts";
 
 export interface OrderModel {
-  orderId?: string;
+  orderId?: number;
   userId?: number;
 
   restaurantId: number;

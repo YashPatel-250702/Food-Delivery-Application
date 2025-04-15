@@ -4,7 +4,9 @@ import { RestaurantErrorMessages } from "../_errorMessages/RestaurantErrorMessag
 import { orderFieldNames } from "../_fieldNames/OrdersFieldNames.ts";
 import { RestaurantFieldNames } from "../_fieldNames/RestaurantFiledNames.ts";
 import { OrderValidationMessages } from "../_validationErrorMessages/OrderValidationMessages.ts";
-import { FoodItemsFieldNames } from "./FoodsFieldNames.ts";
+import { FoodItemsFieldNames } from "../_fieldNames/FoodsFieldNames.ts";
+import { HTTP_STATUS_CODE } from "../HttpCodes.ts";
+import { validationErrorMessage } from "../../_response/Response.ts";
 
 export function validateOrderData(orderData: OrderModel): Response | null {
   const errors: Record<string, string> = {};
@@ -42,12 +44,7 @@ export function validateOrderData(orderData: OrderModel): Response | null {
   }
 
   if (Object.keys(errors).length > 0) {
-    return new Response(JSON.stringify(errors), {
-      status: 400,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    return validationErrorMessage(HTTP_STATUS_CODE.BAD_REQUEST, errors);
   }
 
   return null;
