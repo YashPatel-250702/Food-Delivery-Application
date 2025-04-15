@@ -76,3 +76,15 @@ export async function getAllorders(
 
   return { data, error };
 }
+
+export async function getOrderById(
+  orderId: number,
+): Promise<{ data: OrderModel | null; error: PostgrestError | null }> {
+  const { data, error } = await supabase
+    .from(TableNames.ORDER_TABLE)
+    .select("*")
+    .eq(orderFieldNames.ID, orderId)
+    .maybeSingle();
+
+  return { data, error };
+}

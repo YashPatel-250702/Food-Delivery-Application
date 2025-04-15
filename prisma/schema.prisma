@@ -42,7 +42,7 @@ model Restaurant {
   createdAt      DateTime        @default(now())
   updatedAt      DateTime?
   items          AvailableItems[]
- orders    Order[]
+  orders    Order[]
 }
 
 model AvailableItems {
@@ -60,10 +60,7 @@ model Order {
   id           Int      @id @default(autoincrement())
   userId       Int
   restaurantId Int
-
-  // Store list of foodId and quantity as JSON
   foodItems    Json
-
   address      String
   totalAmount  Float
   orderStatus  String   @default("pending")
