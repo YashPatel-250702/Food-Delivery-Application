@@ -1,6 +1,8 @@
 import { UserLogin } from "../../_model/UserLogin.ts";
+import { validationErrorMessage } from "../../_response/Response.ts";
 import { UserFieldNames } from "../_fieldNames/UserFieldNames.ts";
 import { UserValidationErrorMessages } from "../_validationErrorMessages/UserValidationErrorMessages.ts";
+import { HTTP_STATUS_CODE } from "../HttpCodes.ts";
 
 export function validateUserLoginData(usrLogin: UserLogin): Response | null {
     const errors: Record<string, string> = {};
@@ -26,12 +28,7 @@ export function validateUserLoginData(usrLogin: UserLogin): Response | null {
     }
 
     if (Object.keys(errors).length > 0) {
-        return new Response(JSON.stringify(errors), {
-            status: 400,
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+        return validationErrorMessage(HTTP_STATUS_CODE.BAD_REQUEST, errors);
     }
     return null;
 }

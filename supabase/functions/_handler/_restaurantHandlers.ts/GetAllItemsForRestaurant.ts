@@ -4,25 +4,23 @@ import {
   getRestaurantWithAvailableItems,
 } from "../../_repository/RestaurantRepository.ts";
 import { RestaurantErrorMessages } from "../../_shared/_errorMessages/RestaurantErrorMessages.ts";
-import { AvailableItems } from "../../_model/Item.ts";
 import { RestaurantModel } from "../../_model/AddRestaurantModel.ts";
+import { ErrorResponse, SuccessResponse } from "../../_response/Response.ts";
+import { HTTP_STATUS_CODE } from "../../_shared/HttpCodes.ts";
+import { CommonErrorMessages } from "../../_shared/_errorMessages/CommonErrorMessages.ts";
+import { RestaurantSuccessMessages } from "../../_shared/_successMessages/RestaurantSuccessMessages.ts";
 
 export async function getAvailableItemsHandler(
-  req: Request,
+  _req: Request,
   params: Record<string, string>,
 ): Promise<Response> {
   try {
     const restaurantId: string = params.restaurantId;
 
     if (!restaurantId) {
-      return new Response(
-        JSON.stringify({
-          error: RestaurantErrorMessages.RESTAURANT_ID_REQUIRED,
-        }),
-        {
-          status: 400,
-          headers: { "content-type": "application/json" },
-        },
+      return ErrorResponse(
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        RestaurantErrorMessages.RESTAURANT_ID_REQUIRED,
       );
     }
 
@@ -33,12 +31,9 @@ export async function getAvailableItemsHandler(
 
     if (error) {
       console.error("Error fetching restaurant:", error.message);
-      return new Response(
-        JSON.stringify({ error: error.message }),
-        {
-          status: 400,
-          headers: { "content-type": "application/json" },
-        },
+      return ErrorResponse(
+        HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR,
+        CommonErrorMessages.DATABASE_ERROR,
       );
     }
 
@@ -46,32 +41,23 @@ export async function getAvailableItemsHandler(
       console.error(
         "Error fetching Itmes: Items not found",
       );
-      return new Response(
-        JSON.stringify({
-          error: RestaurantErrorMessages.RESTAURANT_NOT_FOUND_WITH_ID,
-        }),
-        {
-          status: 404,
-          headers: { "content-type": "application/json" },
-        },
+      return ErrorResponse(
+        HTTP_STATUS_CODE.NOT_FOUND,
+        RestaurantErrorMessages.RESTAURANT_NOT_FOUND_WITH_ID + " " +
+          restaurantId,
       );
     }
 
-    return new Response(
-      JSON.stringify(data),
-      {
-        status: 200,
-        headers: { "content-type": "application/json" },
-      },
+    return SuccessResponse(
+      HTTP_STATUS_CODE.OK,
+      RestaurantSuccessMessages.RESTAURANT_FOUND_WITH_ID + " " + restaurantId,
+      data,
     );
   } catch (error) {
     console.error("Error in getAvailableItemsHandler:", error);
-    return new Response(
-      JSON.stringify({ error: "Internal Server Error" }),
-      {
-        status: 500,
-        headers: { "content-type": "application/json" },
-      },
+    return ErrorResponse(
+      HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR,
+      CommonErrorMessages.INTERNAL_SERVER_ERROR,
     );
   }
 }

@@ -1,8 +1,10 @@
 // deno-lint-ignore-file
 import { RestaurantModel } from "../../_model/AddRestaurantModel.ts";
+import { validationErrorMessage } from "../../_response/Response.ts";
 import { AvailableItemsFieldNames } from "../_fieldNames/AvailableItemsFields.ts";
 import { RestaurantFieldNames } from "../_fieldNames/RestaurantFiledNames.ts";
 import { RestaurantValidationErrorMessages } from "../_validationErrorMessages/RestaurantValidationErrorMessages.ts";
+import { HTTP_STATUS_CODE } from "../HttpCodes.ts";
 
 export function restaurantDataValidation(
   restaurantData: RestaurantModel,
@@ -143,12 +145,7 @@ export function restaurantDataValidation(
   }
 
   if (Object.keys(errors).length > 0) {
-    return new Response(JSON.stringify(errors), {
-      status: 400,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    return validationErrorMessage(HTTP_STATUS_CODE.BAD_REQUEST, errors);
   }
 
   return null;

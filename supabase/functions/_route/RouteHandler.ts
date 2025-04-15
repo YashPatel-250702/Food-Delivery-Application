@@ -11,48 +11,73 @@
  * @returns A response to the request.
  */
 
+import { ErrorResponse } from "../_response/Response.ts";
+import { CommonErrorMessages } from "../_shared/_errorMessages/CommonErrorMessages.ts";
+import { HTTP_STATUS_CODE } from "../_shared/HttpCodes.ts";
+
 export async function routeHandler(
   req: Request,
   routes: Record<string, any>,
 ): Promise<Response> {
-  const method = req.method;
-  const url = new URL(req.url);
-  const path = url.pathname;
+  try {
+    const method = req.method;
+    const url = new URL(req.url);
+    const path = url.pathname;
 
-  const allroutesPath: string[] = Object.values(routes).flatMap((route) =>
-    Object.keys(route)
-  );
+    const allroutesPath: string[] = Object.values(routes).flatMap((route) =>
+      Object.keys(route)
+    );
 
-  const allmethodsRoute: Record<string, any> = routes[method];
+    const allmethodsRoute: Record<string, any> = routes[method];
 
-  if (!allmethodsRoute) {
-    return new Response("Method Not Allowed", { status: 405 });
-  }
-
-  if (allroutesPath.includes(path)) {
-    if (!allmethodsRoute[path]) {
-      return new Response("Method Not Allowed", { status: 405 });
+    if (!allmethodsRoute) {
+      return ErrorResponse(
+        HTTP_STATUS_CODE.METHOD_NOT_ALLOWED,
+        CommonErrorMessages.METHOD_NOT_ALLOWED,
+      );
     }
-  }
 
-  // Check if the path is a static route (e.g., /posts)
-  if (allmethodsRoute[path]) {
-    const handler = allmethodsRoute[path];
-    return await handler(req);
-  }
-
-  //dynamic route matching
-  // Check if the path is a dynamic route (e.g., /posts/:id)
-
-  for (const routePath of allroutesPath) {
-    const params = dynamicRouteMatching(path, routePath);
-    if (params) {
-      const handler = allmethodsRoute[routePath];
-      return await handler(req, params);
+    if (allroutesPath.includes(path)) {
+      if (!allmethodsRoute[path]) {
+        return ErrorResponse(
+          HTTP_STATUS_CODE.METHOD_NOT_ALLOWED,
+          CommonErrorMessages.METHOD_NOT_ALLOWED,
+        );
+      }
     }
-  }
 
-  return new Response("Route Not Found", { status: 404 });
+    // Check if the path is a static route (e.g., /posts)
+    if (allmethodsRoute[path]) {
+      const handler = allmethodsRoute[path];
+      return await handler(req);
+    }
+
+    //dynamic route matching
+    for (const routePath of allroutesPath) {
+      const params = dynamicRouteMatching(path, routePath);
+      if (params) {
+        const handler = allmethodsRoute[routePath];
+        if (!handler) {
+          return ErrorResponse(
+            HTTP_STATUS_CODE.METHOD_NOT_ALLOWED,
+            CommonErrorMessages.METHOD_NOT_ALLOWED,
+          );
+        }
+        return await handler(req, params);
+      }
+    }
+
+    return ErrorResponse(
+      HTTP_STATUS_CODE.NOT_FOUND,
+      CommonErrorMessages.ROUTE_NOT_FOUND,
+    );
+  } catch (error) {
+    console.error("Error in routeHandler:", error);
+    return ErrorResponse(
+      HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR,
+      CommonErrorMessages.INTERNAL_SERVER_ERROR,
+    );
+  }
 }
 
 /**

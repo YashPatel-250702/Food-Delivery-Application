@@ -10,18 +10,17 @@ import { createJWT } from "../../_utils/JwtUtil.ts";
 import { UserSuccessMessages } from "../../_shared/_successMessages/UserSuccessMessage.ts";
 import { JwtResponse } from "../../_response/JwtResponse.ts";
 import { JWTPayload } from "https://deno.land/x/jose@v4.14.4/index.ts";
+import { ErrorResponse, SuccessResponse } from "../../_response/Response.ts";
+import { HTTP_STATUS_CODE } from "../../_shared/HttpCodes.ts";
 
 export async function loginHandler(req: Request): Promise<Response> {
   try {
-    const raw = await req.text();
+    const raw: string = await req.text();
 
-    if (!raw) {
-      return new Response(
-        JSON.stringify({ error: CommonErrorMessages.INVALID_REQUEST }),
-        {
-          status: 400,
-          headers: { "content-type": "application/json" },
-        },
+    if (!raw || raw.trim() === "") {
+      return ErrorResponse(
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        CommonErrorMessages.INVALID_REQUEST,
       );
     }
 
@@ -41,27 +40,15 @@ export async function loginHandler(req: Request): Promise<Response> {
 
     if (error) {
       console.error("Error checking existing user:", error.message);
-      return new Response(
-        JSON.stringify({ error: CommonErrorMessages.DATABASE_ERROR }),
-        {
-          status: 500,
-          headers: {
-            "content-type": "application/json",
-          },
-        },
+      return ErrorResponse(
+        HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR,
+        CommonErrorMessages.DATABASE_ERROR,
       );
     }
     if (!data || data === null || data.id === undefined) {
-      return new Response(
-        JSON.stringify({
-          error: UserErrorMessages.USER_INVALID_CREDENTIALS,
-        }),
-        {
-          status: 401,
-          headers: {
-            "content-type": "application/json",
-          },
-        },
+      return ErrorResponse(
+        HTTP_STATUS_CODE.NOT_FOUND,
+        UserErrorMessages.USER_INVALID_CREDENTIALS,
       );
     }
 
@@ -79,24 +66,16 @@ export async function loginHandler(req: Request): Promise<Response> {
       expiredAt: new Date(Date.now() + 60 * 60 * 1000),
     };
 
-    return new Response(JSON.stringify({ data: jwtResponse }), {
-      status: 200,
-      headers: {
-        "content-type": "application/json",
-      },
-    });
+    return SuccessResponse(
+      HTTP_STATUS_CODE.OK,
+      UserSuccessMessages.USER_LOGIN_SUCCESSFULLY,
+      jwtResponse,
+    );
   } catch (error) {
     console.error("Error While Login:", error);
-    return new Response(
-      JSON.stringify({
-        error: CommonErrorMessages.INTERNAL_SERVER_ERROR,
-      }),
-      {
-        status: 500,
-        headers: {
-          "content-type": "application/json",
-        },
-      },
+    return ErrorResponse(
+      HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR,
+      CommonErrorMessages.INTERNAL_SERVER_ERROR,
     );
   }
 }

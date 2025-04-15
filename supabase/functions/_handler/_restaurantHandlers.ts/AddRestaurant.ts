@@ -10,6 +10,8 @@ import { RegisteredType } from "../../_shared/_commonTypes.ts/InsertedType.ts";
 
 import { RestaurantErrorMessages } from "../../_shared/_errorMessages/RestaurantErrorMessages.ts";
 import { RestaurantSuccessMessages } from "../../_shared/_successMessages/RestaurantSuccessMessages.ts";
+import { ErrorResponse, SuccessResponse } from "../../_response/Response.ts";
+import { HTTP_STATUS_CODE } from "../../_shared/HttpCodes.ts";
 
 export async function addRestaurantHandler(
   req: Request,
@@ -17,13 +19,10 @@ export async function addRestaurantHandler(
 ): Promise<Response> {
   try {
     const raw = await req.text();
-    if (!raw) {
-      return new Response(
-        JSON.stringify({ error: CommonErrorMessages.INVALID_REQUEST }),
-        {
-          status: 400,
-          headers: { "content-type": "application/json" },
-        },
+    if (!raw || raw.trim() === "") {
+      return ErrorResponse(
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        CommonErrorMessages.INVALID_REQUEST,
       );
     }
     const restaurantData: RestaurantModel = JSON.parse(raw);
@@ -46,27 +45,15 @@ export async function addRestaurantHandler(
 
     if (error) {
       console.error("Error checking existing restaurant:", error.message);
-      return new Response(
-        JSON.stringify({ error: CommonErrorMessages.DATABASE_ERROR }),
-        {
-          status: 500,
-          headers: {
-            "content-type": "application/json",
-          },
-        },
+      return ErrorResponse(
+        HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR,
+        CommonErrorMessages.DATABASE_ERROR,
       );
     }
     if (count && count > 0) {
-      return new Response(
-        JSON.stringify({
-          error: CommonErrorMessages.RESTAURANT_ALREADY_EXISTS,
-        }),
-        {
-          status: 400,
-          headers: {
-            "content-type": "application/json",
-          },
-        },
+      return ErrorResponse(
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        RestaurantErrorMessages.RESTAURANT_ALREADY_EXISTS,
       );
     }
 
@@ -80,51 +67,28 @@ export async function addRestaurantHandler(
         "Error checking existing restaurant:",
         insertError.message,
       );
-      return new Response(
-        JSON.stringify({ error: CommonErrorMessages.DATABASE_ERROR }),
-        {
-          status: 500,
-          headers: {
-            "content-type": "application/json",
-          },
-        },
+      return ErrorResponse(
+        HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR,
+        CommonErrorMessages.DATABASE_ERROR,
       );
     }
 
     if (!data || !data.id) {
-      return new Response(
-        JSON.stringify({
-          error: RestaurantErrorMessages.RESTAURANT_NOT_REGISTERED,
-        }),
-        {
-          status: 500,
-          headers: { "content-type": "application/json" },
-        },
+      return ErrorResponse(
+        HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR,
+        RestaurantErrorMessages.RESTAURANT_NOT_REGISTERED,
       );
     }
 
-    return new Response(
-      JSON.stringify({
-        message: RestaurantSuccessMessages.REASTAURANT_REGISTERED,
-        restaurantId: data.id,
-      }),
-      {
-        status: 200,
-        headers: { "content-type": "application/json" },
-      },
+    return SuccessResponse(
+      HTTP_STATUS_CODE.OK,
+      RestaurantSuccessMessages.RESTAURANT_REGISTERED_SUCCESSFULLY,
     );
   } catch (error) {
     console.error("Error parsing JSON:", error);
-    return new Response(
-      JSON.stringify({
-        error: CommonErrorMessages.INTERNAL_SERVER_ERROR,
-      }),
-      {
-        status: 500,
-        headers: {
-          "content-type": "application/json",
-        },
-      },
+    return ErrorResponse(
+      HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR,
+      CommonErrorMessages.INTERNAL_SERVER_ERROR,
     );
   }
 }

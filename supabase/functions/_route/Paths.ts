@@ -4,10 +4,15 @@ export enum APIPaths {
 
   ADD_RESTAURANT = "/Food-Delivery/restaurant/add",
 
+  GET_ALL_RESTAURANTS = "/Food-Delivery/restaurant/getAll",
   GET_RESTAURANT_BY_ID = "/Food-Delivery/restaurant/get/:restaurantId",
 
   GET_AVAILABLE_ITEMS_BY_RESTAURANT_ID =
     "/Food-Delivery/restaurant/get/:restaurantId/items",
 
-  ORDER_FOODS = "/Food-Delivery/user/order/food",
+  ORDER_FOODS = "/Food-Delivery/order/food",
+
+  CANCLE_ORDER = "/Food-Delivery/order/cancle/:orderId",
+
+  GTE_ALL_ORDERS_BY_USER_ID = "/Food-Delivery/order/getAllOrders",
 }
