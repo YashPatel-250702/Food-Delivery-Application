@@ -7,8 +7,11 @@ import { HTTP_STATUS_CODE } from "../HttpCodes.ts";
 export function validateUserLoginData(usrLogin: UserLogin): Response | null {
     const errors: Record<string, string> = {};
 
-    if (usrLogin.email && usrLogin.email !== null) {
-        if (!usrLogin.email.includes("@") || !usrLogin.email.endsWith(".com")) {
+    if (usrLogin.email) {
+        if (
+            usrLogin.email == null || !usrLogin.email.includes("@") ||
+            !usrLogin.email.endsWith(".com")
+        ) {
             errors[UserFieldNames.EMAIL] =
                 UserValidationErrorMessages.EMAIL_INVALID;
         }
@@ -17,8 +20,8 @@ export function validateUserLoginData(usrLogin: UserLogin): Response | null {
             UserValidationErrorMessages.EMAIL_REQUIRED;
     }
 
-    if (usrLogin.password && usrLogin.password !== null) {
-        if (usrLogin.password.length < 6) {
+    if (usrLogin.password) {
+        if (usrLogin.password == null || usrLogin.password.length < 6) {
             errors[UserFieldNames.PASSWORD] =
                 UserValidationErrorMessages.PASSWORD_LENGTH;
         }

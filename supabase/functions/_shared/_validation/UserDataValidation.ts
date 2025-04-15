@@ -12,11 +12,13 @@ import { HTTP_STATUS_CODE } from "../HttpCodes.ts";
  * validation error messages if there are validation errors, otherwise returns null.
  */
 
-export function UserDataValidation(user: User): Response | null {
+export function UserDataValidation(
+    user: User,
+): Response | null {
     const errors: Record<string, string> = {};
 
-    if (user.name && user.name !== null) {
-        if (user.name.length < 3) {
+    if (user.name) {
+        if (user.name == null || user.name.length < 3) {
             errors[UserFieldNames.NAME] =
                 UserValidationErrorMessages.NAME_LENGTH;
         }
@@ -24,8 +26,11 @@ export function UserDataValidation(user: User): Response | null {
         errors[UserFieldNames.NAME] = UserValidationErrorMessages.NAME_REQUIRED;
     }
 
-    if (user.email && user.email !== null) {
-        if (!user.email.includes("@") || !user.email.endsWith(".com")) {
+    if (user.email) {
+        if (
+            user.email == null || !user.email.includes("@") ||
+            !user.email.endsWith(".com")
+        ) {
             errors[UserFieldNames.EMAIL] =
                 UserValidationErrorMessages.EMAIL_INVALID;
         }
@@ -34,8 +39,8 @@ export function UserDataValidation(user: User): Response | null {
             UserValidationErrorMessages.EMAIL_REQUIRED;
     }
 
-    if (user.phoneNo && user.phoneNo !== null) {
-        if (user.phoneNo.length !== 12) {
+    if (user.phoneNo) {
+        if (user.phoneNo == null || user.phoneNo.length !== 12) {
             errors[UserFieldNames.PHONE_NO] =
                 UserValidationErrorMessages.PHONE_NO_INVALID;
         }
@@ -44,8 +49,8 @@ export function UserDataValidation(user: User): Response | null {
             UserValidationErrorMessages.PHONE_NO_REQUIRED;
     }
 
-    if (user.password && user.password !== null) {
-        if (user.password.length < 6) {
+    if (user.password) {
+        if (user.password == null || user.password.length < 6) {
             errors[UserFieldNames.PASSWORD] =
                 UserValidationErrorMessages.PASSWORD_LENGTH;
         }
@@ -54,8 +59,8 @@ export function UserDataValidation(user: User): Response | null {
             UserValidationErrorMessages.PASSWORD_REQUIRED;
     }
 
-    if (user.address && user.address !== null) {
-        if (user.address.length < 6) {
+    if (user.address) {
+        if (user.address == null || user.address.length < 6) {
             errors[UserFieldNames.ADDRESS] =
                 UserValidationErrorMessages.ADDRESS_INVALID;
         }

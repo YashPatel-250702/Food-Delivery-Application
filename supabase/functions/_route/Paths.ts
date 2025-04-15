@@ -2,6 +2,10 @@ export enum APIPaths {
   LOGIN = "/Food-Delivery/user/login",
   REGISTER = "/Food-Delivery/user/register",
 
+  GET_USER_BY_ID = "/Food-Delivery/user/get/:id",
+
+  UPDATE_USER = "/Food-Delivery/user/update/:id",
+  GET_ALL_USERS = "/Food-Delivery/user/getAll",
   ADD_RESTAURANT = "/Food-Delivery/restaurant/add",
 
   GET_ALL_RESTAURANTS = "/Food-Delivery/restaurant/getAll",

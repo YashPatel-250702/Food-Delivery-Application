@@ -25,6 +25,13 @@ export async function checkUserAlreadyExistsByEmail(
     return { count, error };
 }
 
+/**
+ * Checks if a user already exists with the given phone number.
+ * Returns an object with a count property set to the number of matching users, or null if no matching users were found.
+ * If an error occurs, the error property is set to the PostgrestError object.
+ * @param {string} phoneNo - Phone number to check.
+ * @returns {Promise<{count:number | null ; error: PostgrestError | null}>}
+ */
 export async function checkUserAlreadyExistsByPhoneNo(
     phoneNo: string,
 ): Promise<{ count: number | null; error: PostgrestError | null }> {
@@ -60,6 +67,12 @@ export async function registerUserRepository(
  * @returns {Promise<{ data: User | null; error: PostgrestError | null }>} - A promise that resolves with an object containing the authenticated user data or an error.
  */
 
+/**
+ * Authenticates a user by verifying their email and password.
+ *
+ * @param {UserLogin} userLogin - The login credentials containing email and password.
+ * @returns {Promise<{ data: User | null; error: PostgrestError | null }>} - A promise that resolves with an object containing the authenticated user data or an error.
+ */
 export async function userLoginRepository(
     userLogin: UserLogin,
 ): Promise<{ data: User | null; error: PostgrestError | null }> {
@@ -69,6 +82,53 @@ export async function userLoginRepository(
         .eq(UserFieldNames.EMAIL, userLogin.email)
         .eq(UserFieldNames.PASSWORD, userLogin.password)
         .maybeSingle();
+
+    return { data, error };
+}
+
+/**
+ * Updates a user in the database.
+ * @param {User} user - The user object with the updated data.
+ * @returns {Promise<{ data: User | null; error: PostgrestError | null }>} - A promise that resolves with an object containing either the updated user or an error.
+ */
+export async function updateUserById(
+    user: User,
+): Promise<{ data: User | null; error: PostgrestError | null }> {
+    const { data, error } = await supabase
+        .from(TableNames.USER)
+        .update(user)
+        .eq(UserFieldNames.ID, user.id)
+        .select("*")
+        .maybeSingle();
+
+    return { data, error };
+}
+
+/**
+ * Retrieves a user by their ID from the database.
+ *
+ * @param {number} id - The ID of the user to be retrieved.
+ * @returns {Promise<{ data: User | null; error: PostgrestError | null }>} A promise that resolves with an object containing the retrieved user or an error if the operation fails.
+ */
+
+export async function getUserById(
+    id: number,
+): Promise<{ data: User | null; error: PostgrestError | null }> {
+    const { data, error } = await supabase
+        .from(TableNames.USER)
+        .select("*")
+        .eq(UserFieldNames.ID, id)
+        .maybeSingle();
+
+    return { data, error };
+}
+
+export async function getAllUsersRepository(): Promise<
+    { data: User[] | null; error: PostgrestError | null }
+> {
+    const { data, error } = await supabase
+        .from(TableNames.USER)
+        .select("*");
 
     return { data, error };
 }
